@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -53,8 +54,17 @@ public class MyNetworkManager : NetworkManager
             NoPlayerCinemachine.gameObject.SetActive(true);
         if (InGameCinemachine)
             InGameCinemachine.gameObject.SetActive(false);
+        
+        
+        // Restart Scene to Reset All RigidBody Transform Positions
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
-    } 
-
- 
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        
+        // Restart Scene to Reset All RigidBody Transform Positions
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
