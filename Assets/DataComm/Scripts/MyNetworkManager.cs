@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager
 {
+    
     public override void OnClientConnect()
     {
         base.OnClientConnect();
@@ -63,8 +64,10 @@ public class MyNetworkManager : NetworkManager
     public override void OnStopClient()
     {
         base.OnStopClient();
-        
-        // Restart Scene to Reset All RigidBody Transform Positions
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (this.isNetworkActive == false)
+        {
+            // Restart Scene to Reset All RigidBody Transform Positions
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }
