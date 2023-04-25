@@ -299,7 +299,6 @@ GameObject:
   - component: {fileID: 7428737901960575168}
   - component: {fileID: 1794126864182718106}
   - component: {fileID: 4440324609320243501}
-  - component: {fileID: 391270574177410098}
   - component: {fileID: 3071275865338507721}
   m_Layer: 0
   m_Name: A2_Character
@@ -403,9 +402,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c69e6c700c64e79ba032ab49947955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0.1
   pushLayers:
     serializedVersion: 2
     m_Bits: 1
@@ -469,9 +465,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e79b292f5d6f44227bb63fb68f9a7bf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0.1
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
   jump: 0
@@ -631,29 +624,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &391270574177410098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6987302234070218294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83392ae5c1b731446909f252fd494ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0.1
-  target: {fileID: 4440324609320243501}
-  clientAuthority: 0
-  syncVelocity: 1
-  clearVelocity: 0
-  velocitySensitivity: 0.1
-  syncAngularVelocity: 1
-  clearAngularVelocity: 0
-  angularVelocitySensitivity: 0.1
 --- !u!136 &3071275865338507721
 CapsuleCollider:
   m_ObjectHideFlags: 0

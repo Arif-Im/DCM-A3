@@ -27,6 +27,9 @@ using UnityEngine;
             // We dont want to push objects below us
             if (hit.moveDirection.y < -0.3f) return;
 
+            //if(hit.gameObject.CompareTag("Collidable"))
+            //    hit.gameObject.tag = 
+
             // Calculate push direction from move direction, horizontal motion only
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0.0f, hit.moveDirection.z);
 
