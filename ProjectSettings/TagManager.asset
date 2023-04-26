@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Props
   - Collidable
+  - Uncollidable
+  - Canvas
   layers:
   - Default
   - TransparentFX

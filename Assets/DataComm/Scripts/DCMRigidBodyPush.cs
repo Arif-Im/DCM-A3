@@ -6,8 +6,14 @@ using UnityEngine;
         public LayerMask pushLayers;
         public bool canPush;
         [Range(0.5f, 5f)] public float strength = 1.1f;
+        private MyNetworkPlayer player;
 
-        private void OnControllerColliderHit(ControllerColliderHit hit)
+    private void Start()
+    {
+        player = GetComponent<MyNetworkPlayer>();
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (canPush) PushRigidBodies(hit);
         }
@@ -27,11 +33,16 @@ using UnityEngine;
             // We dont want to push objects below us
             if (hit.moveDirection.y < -0.3f) return;
 
-            //if(hit.gameObject.CompareTag("Collidable"))
-            //    hit.gameObject.tag = 
+        if (hit.gameObject.CompareTag("Collidable"))
+        {
+            hit.gameObject.tag = "Uncollidable";
+            player.setScore(100);
+            player.RpcDisplayScore();
+            Debug.Log("Collided");
+        }
 
-            // Calculate push direction from move direction, horizontal motion only
-            Vector3 pushDir = new Vector3(hit.moveDirection.x, 0.0f, hit.moveDirection.z);
+        // Calculate push direction from move direction, horizontal motion only
+        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0.0f, hit.moveDirection.z);
 
             // Apply the push and take strength into account
             body.AddForce(pushDir * strength, ForceMode.Impulse);

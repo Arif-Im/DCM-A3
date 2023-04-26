@@ -44,6 +44,7 @@ public class MyNetworkManager : NetworkManager
             Random.Range(0f, 1f));
 
         player.setDisplayColor(displayColor);
+        player.setScoreText(numPlayers - 1);
 
     }
 
