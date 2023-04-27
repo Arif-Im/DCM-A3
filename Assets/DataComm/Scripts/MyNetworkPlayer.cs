@@ -27,14 +27,17 @@ public class MyNetworkPlayer : NetworkBehaviour
 
     private void LateUpdate()
     {
-        if (isClient)
+        if(isOwned) 
+            CommandRPCDisplayScore();
+        else
         {
             SetDisplayScore();
         }
-        else
-        {
-            RpcDisplayScore();
-        }
+    }
+
+    private void OnEnable()
+    {
+        GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(true);
     }
 
     private void OnDisable()
@@ -43,6 +46,7 @@ public class MyNetworkPlayer : NetworkBehaviour
         {
             displayScoreUI.transform.GetChild(0).gameObject.SetActive(false);
         }    
+        // GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(false);
     }
 
     #region Server
@@ -63,14 +67,12 @@ public class MyNetworkPlayer : NetworkBehaviour
         index = _index;
         // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(_index).GetComponent<TMP_Text>();
         // Debug.Log(displayScoreText.name);
-        RpcDisplayScore();
     }
 
     [Server]
     public void setScore(int _score)
     {
         score += _score;
-        RpcDisplayScore();
     }
 
     [Command]
@@ -136,11 +138,7 @@ public class MyNetworkPlayer : NetworkBehaviour
         // displayScoreText.text = $"Player {index + 1}: {score}";
         if (displayScoreUI == null)
         {
-            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
-        }
-        if (displayScoreUI.transform.parent.GetSiblingIndex() != index)
-        {
-            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
+            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").Find($"PlayerScore {index}").gameObject;
         }
 
         if (displayScoreUI != null)
@@ -150,7 +148,7 @@ public class MyNetworkPlayer : NetworkBehaviour
         }
     }
     [ClientRpc]
-    public void RpcDisplayScore()
+    public void ClientRpcDisplayScore()
     {
         SetDisplayScore();
         // if (displayScoreUI == null)
@@ -159,8 +157,12 @@ public class MyNetworkPlayer : NetworkBehaviour
         //
         // displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
     }
-    
-    
+
+    [Command]
+    public void CommandRPCDisplayScore()
+    {
+        ClientRpcDisplayScore();
+    }
     
 
     #endregion
