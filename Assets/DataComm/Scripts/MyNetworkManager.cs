@@ -1,13 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class MyNetworkManager : NetworkManager
 {
-    
+
     public override void OnClientConnect()
     {
         base.OnClientConnect();
@@ -36,9 +38,9 @@ public class MyNetworkManager : NetworkManager
         Debug.Log($"Current Number of Players {numPlayers} ");
 
         MyNetworkPlayer player = conn.identity.GetComponent<MyNetworkPlayer>();
+        player.index = numPlayers;
 
         player.setDisplayName($"Player {numPlayers}");
-        player.index = numPlayers;
 
         Color displayColor = new Color(Random.Range(0, 1f),
             Random.Range(0f, 1f),

@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &87495573124375175
 MonoBehaviour:
@@ -55,7 +55,7 @@ MonoBehaviour:
   onlineScene: 
   transport: {fileID: 995238508328616549}
   networkAddress: localhost
-  maxConnections: 100
+  maxConnections: 8
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 6987302234070218294, guid: 46e3fb2b81ae14fc6ae244b0dce2fe18,
     type: 3}
@@ -63,6 +63,8 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs: []
   timeInterpolationGui: 0
+  NoPlayerCinemachine: {fileID: 0}
+  InGameCinemachine: {fileID: 0}
 --- !u!114 &995238508328616549
 MonoBehaviour:
   m_ObjectHideFlags: 0

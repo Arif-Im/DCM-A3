@@ -27,19 +27,22 @@ public class MyNetworkPlayer : NetworkBehaviour
 
     private void LateUpdate()
     {
-
-        // displayScoreText.text = $"Player {index + 1}: {score}";
-        if (displayScoreUI == null)
+        if (!isClient)
         {
-            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
+            SetDisplayScore();
         }
+        else
+        {
+            RpcDisplayScore();
+        }
+    }
 
+    private void OnDisable()
+    {
         if (displayScoreUI != null)
         {
-            displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
-            displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
-        }
-
+            displayScoreUI.transform.GetChild(0).gameObject.SetActive(false);
+        }    
     }
 
     #region Server
@@ -60,12 +63,14 @@ public class MyNetworkPlayer : NetworkBehaviour
         index = _index;
         // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(_index).GetComponent<TMP_Text>();
         // Debug.Log(displayScoreText.name);
+        RpcDisplayScore();
     }
 
     [Server]
     public void setScore(int _score)
     {
         score += _score;
+        RpcDisplayScore();
     }
 
     [Command]
@@ -81,12 +86,12 @@ public class MyNetworkPlayer : NetworkBehaviour
     }
 
 
-    [Command]
-    public void CmdSetScore()
-    {
-        setScore(100);
-        // RpcDisplayScore();
-    }
+    // [Command]
+    // public void CmdSetScore()
+    // {
+    //     setScore(100);
+    //     // RpcDisplayScore();
+    // }
 
     #endregion
 
@@ -124,26 +129,37 @@ public class MyNetworkPlayer : NetworkBehaviour
         Debug.Log(newDisplayName);
     }
     
-    // Redundant, no point calling an RPC for UI
-    // Its better to just Update the UI In Update Function instead
-    /*
-     
-    public void RpcSetDisplayScore()
+    
+    public void SetDisplayScore()
     {
         // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(index).GetComponent<TMP_Text>();
-        displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
-        displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
+        // displayScoreText.text = $"Player {index + 1}: {score}";
+        if (displayScoreUI == null)
+        {
+            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
+        }
+        if (displayScoreUI.transform.parent.GetSiblingIndex() != index)
+        {
+            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
+        }
+
+        if (displayScoreUI != null)
+        {
+            displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
+            displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
+        }
     }
     [ClientRpc]
     public void RpcDisplayScore()
     {
+        SetDisplayScore();
         // if (displayScoreUI == null)
         //     RpcSetDisplayScore();
         // // displayScoreText.text = $"Player {index + 1}: {score}";
         //
         // displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
     }
-    */
+    
     
     
 
