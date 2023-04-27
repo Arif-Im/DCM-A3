@@ -37,7 +37,7 @@ using UnityEngine;
         {
             hit.gameObject.tag = "Uncollidable";
             player.setScore(100);
-            player.RpcDisplayScore();
+            // player.RpcDisplayScore();
             Debug.Log("Collided");
         }
 

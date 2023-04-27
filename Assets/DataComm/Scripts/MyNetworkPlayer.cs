@@ -1,16 +1,17 @@
+using System;
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MyNetworkPlayer : NetworkBehaviour
 {
     [SerializeField] private TMP_Text displayNameText;
     [SerializeField] private Renderer displayColorRenderer;
-    [SerializeField] private TMP_Text displayScoreText;
-
-
+    [SerializeField] private GameObject displayScoreUI;
+    
     [SyncVar(hook = nameof(OnSetIndex))]
-    int index = 0;
+    public int index = 0;
 
     [SyncVar(hook = nameof(OnUpdateScore))]
     [SerializeField]
@@ -23,6 +24,23 @@ public class MyNetworkPlayer : NetworkBehaviour
     [SyncVar(hook = nameof(HandleDisplayColourUpdate))] 
     [SerializeField]
     private Color displayColor = Color.black;
+
+    private void LateUpdate()
+    {
+
+        // displayScoreText.text = $"Player {index + 1}: {score}";
+        if (displayScoreUI == null)
+        {
+            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
+        }
+
+        if (displayScoreUI != null)
+        {
+            displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
+            displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
+        }
+
+    }
 
     #region Server
     [Server]
@@ -40,10 +58,9 @@ public class MyNetworkPlayer : NetworkBehaviour
     public void setScoreText(int _index)
     {
         index = _index;
-        displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(_index).GetComponent<TMP_Text>();
-        Debug.Log(displayScoreText.name);
+        // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(_index).GetComponent<TMP_Text>();
+        // Debug.Log(displayScoreText.name);
     }
-
 
     [Server]
     public void setScore(int _score)
@@ -68,7 +85,7 @@ public class MyNetworkPlayer : NetworkBehaviour
     public void CmdSetScore()
     {
         setScore(100);
-        RpcDisplayScore();
+        // RpcDisplayScore();
     }
 
     #endregion
@@ -106,19 +123,29 @@ public class MyNetworkPlayer : NetworkBehaviour
     {
         Debug.Log(newDisplayName);
     }
-
+    
+    // Redundant, no point calling an RPC for UI
+    // Its better to just Update the UI In Update Function instead
+    /*
+     
     public void RpcSetDisplayScore()
     {
-        displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(index).GetComponent<TMP_Text>();
+        // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(index).GetComponent<TMP_Text>();
+        displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").GetChild(index).gameObject;
+        displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
     }
-
     [ClientRpc]
     public void RpcDisplayScore()
     {
-        if (displayScoreText == null)
-            RpcSetDisplayScore();
-        displayScoreText.text = $"Player {index + 1}: {score}";
+        // if (displayScoreUI == null)
+        //     RpcSetDisplayScore();
+        // // displayScoreText.text = $"Player {index + 1}: {score}";
+        //
+        // displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
     }
+    */
+    
+    
 
     #endregion
 

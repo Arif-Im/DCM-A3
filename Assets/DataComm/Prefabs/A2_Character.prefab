@@ -388,6 +388,11 @@ MonoBehaviour:
   syncInterval: 0.1
   displayNameText: {fileID: 5142604246675113775}
   displayColorRenderer: {fileID: 1528607647117782102}
+  displayScoreText: {fileID: 0}
+  displayScoreUIPrefab: {fileID: 2787550063892891143, guid: f7d0c86fea9e346d88f911b6050c0599,
+    type: 3}
+  index: 0
+  score: 0
   displayName: Missing Name
   displayColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &232492827759885510
