@@ -27,7 +27,7 @@ public class MyNetworkPlayer : NetworkBehaviour
 
     private void LateUpdate()
     {
-        if (!isClient)
+        if (isClient)
         {
             SetDisplayScore();
         }
