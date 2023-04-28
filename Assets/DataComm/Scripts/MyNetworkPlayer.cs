@@ -24,20 +24,9 @@ public class MyNetworkPlayer : NetworkBehaviour
     [SyncVar(hook = nameof(HandleDisplayColourUpdate))] 
     [SerializeField]
     private Color displayColor = Color.black;
-
-    private void LateUpdate()
-    {
-        if(isOwned) 
-            CommandRPCDisplayScore();
-        else
-        {
-            SetDisplayScore();
-        }
-    }
-
     private void OnEnable()
     {
-        GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(true); 
     }
 
     private void OnDisable()
@@ -47,6 +36,11 @@ public class MyNetworkPlayer : NetworkBehaviour
             displayScoreUI.transform.GetChild(0).gameObject.SetActive(false);
         }    
         // GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        HandleDisplayScore();
     }
 
     #region Server
@@ -65,8 +59,10 @@ public class MyNetworkPlayer : NetworkBehaviour
     public void setScoreText(int _index)
     {
         index = _index;
+
         // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(_index).GetComponent<TMP_Text>();
         // Debug.Log(displayScoreText.name);
+
     }
 
     [Server]
@@ -117,6 +113,8 @@ public class MyNetworkPlayer : NetworkBehaviour
     private void OnUpdateScore(int oldScore, int newScore)
     {
         score = newScore;
+        CommandRPCDisplayScore();
+
     }
 
     [ContextMenu("Set this Name")]
@@ -132,25 +130,21 @@ public class MyNetworkPlayer : NetworkBehaviour
     }
     
     
-    public void SetDisplayScore()
+    public void HandleDisplayScore()
     {
+
+        displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").Find($"PlayerScore {index}").gameObject;
+        displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
+        displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
+        
         // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(index).GetComponent<TMP_Text>();
         // displayScoreText.text = $"Player {index + 1}: {score}";
-        if (displayScoreUI == null)
-        {
-            displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").Find($"PlayerScore {index}").gameObject;
-        }
-
-        if (displayScoreUI != null)
-        {
-            displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
-            displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
-        }
     }
     [ClientRpc]
     public void ClientRpcDisplayScore()
     {
-        SetDisplayScore();
+
+        HandleDisplayScore();
         // if (displayScoreUI == null)
         //     RpcSetDisplayScore();
         // // displayScoreText.text = $"Player {index + 1}: {score}";
