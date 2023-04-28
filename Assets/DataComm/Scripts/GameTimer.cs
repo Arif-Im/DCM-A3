@@ -13,11 +13,13 @@ public class GameTimer : NetworkBehaviour {
  
      void Start(){
          if(isServer){ // For the host to do: use the timer and control the time.
-             if (isLocalPlayer) {
+             // if (isLocalPlayer) 
+             {
                  serverTimer = this;
                  masterTimer = true;
              }
-         }else if(isLocalPlayer){ //For all the boring old clients to do: get the host's timer.
+         }
+         else if(isLocalPlayer){ //For all the boring old clients to do: get the host's timer.
              GameTimer[] timers = FindObjectsOfType<GameTimer>();
              for(int i =0; i<timers.Length; i++){
                  if(timers[i].masterTimer){

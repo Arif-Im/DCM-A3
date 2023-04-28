@@ -8,6 +8,8 @@ public class DCMTurnManager : NetworkBehaviour
     public static DCMTurnManager Instance { get; private set; }
 
     public GameObject TurnMarker;
+
+    [SerializeField] private GameTimer _gameTimer;
     private void Awake() 
     { 
         // If there is an instance, and it's not me, delete myself.
@@ -19,8 +21,12 @@ public class DCMTurnManager : NetworkBehaviour
         else 
         { 
             Instance = this; 
-        } 
+        }
+
+        TryGetComponent(out _gameTimer);
     }
+    
+    
     
     
 }
