@@ -19,7 +19,6 @@ public class DCMTurnManager : NetworkBehaviour
 
     public float curTurnTimeLeft;
 
-    private GameTimer _gameTimer;
 
     private void Awake()
     {
