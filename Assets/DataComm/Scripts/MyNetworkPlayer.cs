@@ -161,4 +161,22 @@ public class MyNetworkPlayer : NetworkBehaviour
 
     #endregion
 
+    #region Pass Authority
+
+    public TurnMarker CurrentMarker;
+    // Ref: https://youtu.be/nkU-dgExUlI?t=548
+    [Command]
+    public void CmdPickUpMarker(TurnMarker marker)
+    {
+        CurrentMarker = marker;
+        CurrentMarker.netIdentity.AssignClientAuthority(connectionToClient);
+    }
+    [Command]
+    public void CmdDropMarker(TurnMarker marker)
+    {
+        marker.Parent = null;
+    }
+
+
+    #endregion
 }
