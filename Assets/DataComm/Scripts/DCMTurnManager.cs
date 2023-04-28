@@ -74,18 +74,18 @@ public class DCMTurnManager : NetworkBehaviour
 
     private void HandleTurnIndexUpdate(int oldIndex, int newIndex)
     {
-        print(isOwned);
+        // print(isOwned);
         if (turnMarker.gameObject != null)
         {
             List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
             var oldNetworkPlayer = allPlayers.Find(x => x.index == oldIndex);
-            if(oldNetworkPlayer)
+            if(oldNetworkPlayer && oldNetworkPlayer.isOwned)
                 oldNetworkPlayer.CmdDropMarker(turnMarker.gameObject);
             
             var newNetworkPlayer = allPlayers.Find(x => x.index == newIndex);
             if(newNetworkPlayer)
                 if(isServer)
-                    newNetworkPlayer.PickupMarker(turnMarker.gameObject);
+                    newNetworkPlayer.ClientRPCPickUpMarker(turnMarker.gameObject);
         }
     }
 }

@@ -190,7 +190,12 @@ public class MyNetworkPlayer : NetworkBehaviour
     [ClientRpc]
     public void ClientRPCPickUpMarker(GameObject marker)
     {
-        PickupMarker(marker);
+        if(this.index==DCMTurnManager.Instance.turnIndex)
+            PickupMarker(marker);
+        else
+        {
+            CmdDropMarker(marker);
+        }
     }
     
     [Command]
