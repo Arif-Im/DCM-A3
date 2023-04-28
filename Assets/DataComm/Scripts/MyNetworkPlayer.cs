@@ -186,27 +186,34 @@ public class MyNetworkPlayer : NetworkBehaviour
     public GameObject CurrentMarker;
     public void PickupMarker(GameObject marker)
     {
-
         if (this.index != DCMTurnManager.Instance.turnIndex)
             return;
         CurrentMarker = marker;
         var turnMarker = marker.GetComponent<TurnMarker>();
         turnMarker.netIdentity.RemoveClientAuthority();
         turnMarker.netIdentity.AssignClientAuthority(connectionToClient);
-        turnMarker.Parent = this.gameObject;
-
-
+        
+        if(isServer)
+            turnMarker.Parent = this.gameObject;
     }
     
     
-    // Ref: https://youtu.be/nkU-dgExUlI?t=548
-    [Command]
-    public void CmdPickUpMarker(GameObject marker)
+    // // Ref: https://youtu.be/nkU-dgExUlI?t=548
+    // [Command]
+    // public void CmdPickUpMarker(GameObject marker)
+    // {
+    //     PickupMarker(marker);
+    // }
+
+    [Server]
+    public void ServerPickUpMarker(GameObject marker)
     {
-        PickupMarker(marker);
+        PickupMarker(marker); // calls for server
+        
+        // RPC to all clients
+        ClientRPCPickUpMarker(marker);
     }
 
-    
     [ClientRpc]
     public void ClientRPCPickUpMarker(GameObject marker)
     {
@@ -218,7 +225,9 @@ public class MyNetworkPlayer : NetworkBehaviour
     {
         CurrentMarker = null;
         var turnMarker = marker.GetComponent<TurnMarker>();
-        turnMarker.Parent = null;
+        turnMarker.netIdentity.RemoveClientAuthority();
+
+        // turnMarker.Parent = null;
     }
 
 
