@@ -197,16 +197,17 @@ public class DCMThirdPersonController : NetworkBehaviour
 
     private void Update()
     {
-        if( DCMTurnManager.Instance!=null)
-            if (DCMTurnManager.Instance.turnMarker != null)
-            {
-                if(_playerInput!=null)
-                    _playerInput.enabled = DCMTurnManager.Instance.turnIndex == _myNetworkPlayer.index;
-            }
 
         // https://youtu.be/K5vWj721aM0?t=362
         if (!isOwned)
             return;
+        if (_playerInput != null)
+            if (DCMTurnManager.Instance != null)
+                if (DCMTurnManager.Instance.turnMarker != null)
+                {
+                    bool correctIndex = DCMTurnManager.Instance.turnIndex == _myNetworkPlayer.index;
+                    _playerInput.enabled = correctIndex;
+                }
         if (isLocalPlayer && _playerInput.enabled)
         {
             Move(_input.move, _mainCamera.transform.eulerAngles.y);

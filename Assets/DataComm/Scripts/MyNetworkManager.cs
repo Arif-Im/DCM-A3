@@ -62,6 +62,12 @@ public class MyNetworkManager : NetworkManager
 
     }
 
+    public override void Update()
+    {
+        base.Update();
+        
+    }
+
     public override void OnStopServer()
     {
         base.OnStopServer();

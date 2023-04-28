@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class MyNetworkPlayer : NetworkBehaviour
 {
-    [SerializeField] private TMP_Text displayNameText;
+    [SerializeField] public TMP_Text displayNameText;
     [SerializeField] private Renderer displayColorRenderer;
     [SerializeField] private GameObject displayScoreUI;
     
@@ -17,7 +17,7 @@ public class MyNetworkPlayer : NetworkBehaviour
 
     [SyncVar(hook = nameof(OnUpdateScore))]
     [SerializeField]
-    private int score = 0;
+    public int score = 0;
 
     [SyncVar(hook = nameof(HandleDisplayNameUpdate))] 
     [SerializeField]
@@ -27,7 +27,7 @@ public class MyNetworkPlayer : NetworkBehaviour
     [SerializeField]
     private Color displayColor = Color.black;
 
-    private DCMThirdPersonController _controller;
+    public DCMThirdPersonController _controller;
 
     private void Awake()
     {
@@ -71,7 +71,7 @@ public class MyNetworkPlayer : NetworkBehaviour
     public void setScoreText(int _index)
     {
         index = _index;
-
+        
         // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(_index).GetComponent<TMP_Text>();
         // Debug.Log(displayScoreText.name);
 
@@ -149,7 +149,11 @@ public class MyNetworkPlayer : NetworkBehaviour
         displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
         
         if(isLocalPlayer)
-            displayScoreUI.GetComponentInChildren<Image>().color = Color.yellow;
+            displayScoreUI.GetComponentInChildren<Image>().color = Color.red;
+        else
+        {
+            displayScoreUI.GetComponentInChildren<Image>().color = Color.white;
+        }
 
         displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
         
