@@ -24,7 +24,7 @@ public class DCMTurnManager : NetworkBehaviour
 
     public float curTurnTimeLeft;
 
-    public float TimeUntilMatchEnds = 60*2; // 2 minutes until match ends
+    float TimeUntilMatchEnds = 120; // 2 minutes until match ends
 
     private void Awake()
     {
@@ -40,11 +40,10 @@ public class DCMTurnManager : NetworkBehaviour
         }
 
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}";
-
     }
 
 
-    private float matchTime;
+    float matchTime;
     private void LateUpdate()
     {
         List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
@@ -65,9 +64,8 @@ public class DCMTurnManager : NetworkBehaviour
                 }
             }
         }
-        
-        curTurnTimeLeft = turnDuration - Mathf.Abs((float)NetworkTime.time - turnNetworkBeginTime);
 
+        curTurnTimeLeft = turnDuration - Mathf.Abs((float)NetworkTime.time - turnNetworkBeginTime);
         if (matchTime >= TimeUntilMatchEnds)
         {
             matchEndText.gameObject.SetActive(true);
@@ -76,6 +74,7 @@ public class DCMTurnManager : NetworkBehaviour
             {
                 p._controller.enabled = false;
             }
+
             var winPlayer = allPlayers.First();
             matchEndText.text = $"{winPlayer.displayNameText.text} Wins\n With Score of {winPlayer.score}";
         }
@@ -83,6 +82,7 @@ public class DCMTurnManager : NetworkBehaviour
         {
             matchTime = (float)NetworkTime.time;
         }
+
         string timeMinutes = DisplayTimeMinutes(matchTime);
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}\n{timeMinutes}";
     }
@@ -106,10 +106,10 @@ public class DCMTurnManager : NetworkBehaviour
                 }
         }
     }
-    
+
     string DisplayTimeMinutes(float timeToDisplay)
     {
-        float minutes = Mathf.FloorToInt(timeToDisplay / 60);  
+        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
