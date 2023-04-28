@@ -39,7 +39,7 @@ public class DCMTurnManager : NetworkBehaviour
             Instance = this;
         }
 
-        turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}";
+        turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\nTurnTime: {(curTurnTimeLeft).ToString("F2")}";
     }
 
 
@@ -84,7 +84,7 @@ public class DCMTurnManager : NetworkBehaviour
         }
 
         string timeMinutes = DisplayTimeMinutes(matchTime);
-        turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}\n{timeMinutes}";
+        turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\nTurnTime  : {(curTurnTimeLeft).ToString("F2")}\nElapsedTime: {timeMinutes}";
     }
 
     private void HandleTurnIndexUpdate(int oldIndex, int newIndex)
