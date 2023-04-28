@@ -138,6 +138,8 @@ public class DCMThirdPersonController : NetworkBehaviour
         {
             cinemachineTargetGroup.RemoveMember(this.transform.Find("LookAtPos"));
         }
+        
+        
     }
 
     public void AddSelfToCineGroupTarget()
@@ -205,6 +207,8 @@ public class DCMThirdPersonController : NetworkBehaviour
             Move(_input.move, _mainCamera.transform.eulerAngles.y);
         }
     }
+    
+    
 
     private void FixedUpdate()
     {

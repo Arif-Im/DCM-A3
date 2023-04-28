@@ -37,6 +37,10 @@ public class MyNetworkPlayer : NetworkBehaviour
             displayScoreUI.transform.GetChild(0).gameObject.SetActive(false);
         }    
         // GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(false);
+        
+        if(isOwned)
+            if(CurrentMarker!=null)
+                this.CmdDropMarker(CurrentMarker);
     }
 
     private void Update()
@@ -113,7 +117,8 @@ public class MyNetworkPlayer : NetworkBehaviour
     private void OnUpdateScore(int oldScore, int newScore)
     {
         score = newScore;
-        CommandRPCDisplayScore();
+        if(isOwned)
+            CommandRPCDisplayScore();
 
     }
 
@@ -191,9 +196,8 @@ public class MyNetworkPlayer : NetworkBehaviour
     [Command]
     public void CmdDropMarker(GameObject marker)
     {
-        CurrentMarker = marker;
+        CurrentMarker = null;
         var turnMarker = marker.GetComponent<TurnMarker>();
-        turnMarker.netIdentity.RemoveClientAuthority();
         turnMarker.Parent = null;
     }
 

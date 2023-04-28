@@ -17,15 +17,11 @@ public class DCMTurnManager : NetworkBehaviour
 
     public float turnDuration = 10f;
 
-    [SyncVar] public int turnIndex;
+    [SyncVar(hook = nameof(HandleTurnIndexUpdate))]
+    public int turnIndex;
     [SyncVar] public float turnNetworkBeginTime;
 
     public float curTurnTimeLeft;
-
-    public override void OnStartAuthority()
-    {
-        base.OnStartAuthority();
-    }
 
     private void Awake()
     {
@@ -43,16 +39,21 @@ public class DCMTurnManager : NetworkBehaviour
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}";
     }
 
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+        turnIndex = 1;
+    }
+
     private void LateUpdate()
     {
         if (curTurnTimeLeft <= 0)
         {
             List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
-            var networkPlayer = allPlayers.Find(x => x.index == turnIndex);
-            if (networkPlayer == null)
+            if (allPlayers.Count<=0)
                 return;
-            print("Pick");
-            print(allPlayers.Count);
+            // print("Pick");
+            // print(allPlayers.Count);
 
             if (isServer)
             {
@@ -63,15 +64,28 @@ public class DCMTurnManager : NetworkBehaviour
                     turnIndex = 0;
                 }
             }
-            //
-            if (turnMarker.gameObject != null)
-            {
-                networkPlayer.CmdPickUpMarker(turnMarker.gameObject);
-            }
+
         }
 
 
         curTurnTimeLeft = turnDuration - Mathf.Abs((float)NetworkTime.time - turnNetworkBeginTime);
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}";
+    }
+
+    private void HandleTurnIndexUpdate(int oldIndex, int newIndex)
+    {
+        print(isOwned);
+        if (turnMarker.gameObject != null)
+        {
+            List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
+            var oldNetworkPlayer = allPlayers.Find(x => x.index == oldIndex);
+            if(oldNetworkPlayer)
+                oldNetworkPlayer.CmdDropMarker(turnMarker.gameObject);
+            
+            var newNetworkPlayer = allPlayers.Find(x => x.index == newIndex);
+            if(newNetworkPlayer)
+                if(isServer)
+                    newNetworkPlayer.PickupMarker(turnMarker.gameObject);
+        }
     }
 }
