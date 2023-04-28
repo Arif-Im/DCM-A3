@@ -11,10 +11,13 @@ public class DCMTurnManager : NetworkBehaviour
 
     public GameObject TurnMarker;
     public TextMeshProUGUI turnText;
-    public int TurnIndex;
+    
 
     public float TurnTime = 10f;
 
+    [SyncVar]
+    public int TurnIndex;
+    [SyncVar]
     public float TurnNetworkBeginTime;
 
     public float curTurnTimeLeft;
@@ -38,13 +41,17 @@ public class DCMTurnManager : NetworkBehaviour
 
     private void Update()
     {
-        if (curTurnTimeLeft >= 10)
+        if (curTurnTimeLeft >= 10 && isServer)
         {
             TurnNetworkBeginTime = (float)NetworkTime.time;
             TurnIndex++;
+            if (TurnIndex > NetworkManager.singleton.numPlayers)
+            {
+                TurnIndex = 0;
+            }
         }
 
-        curTurnTimeLeft = (float)NetworkTime.time - TurnNetworkBeginTime;
+        curTurnTimeLeft = Mathf.Abs((float)NetworkTime.time - TurnNetworkBeginTime);
         turnText.text = $"<size=130%>Player {TurnIndex}'s </size>\nTurn\n{curTurnTimeLeft.ToString("F2")}";
     }
 }
