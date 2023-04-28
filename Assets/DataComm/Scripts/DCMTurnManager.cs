@@ -32,7 +32,6 @@ public class DCMTurnManager : NetworkBehaviour
     
     private void Awake()
     {
-        offsetTime = (float)NetworkTime.time;
 
         // If there is an instance, and it's not me, delete myself.
 
@@ -46,6 +45,17 @@ public class DCMTurnManager : NetworkBehaviour
         }
 
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\nTurnTime: {(curTurnTimeLeft).ToString("F2")}";
+    }
+
+    private void OnEnable()
+    {
+        offsetTime = (float)NetworkTime.time;
+    }
+
+    private void OnDisable()
+    {
+
+        matchEndText.gameObject.SetActive(false);
     }
 
 
