@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,10 @@ public class DCMTurnManager : NetworkBehaviour
 
     public float curTurnTimeLeft;
 
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+    }
 
     private void Awake()
     {
@@ -38,10 +43,17 @@ public class DCMTurnManager : NetworkBehaviour
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}";
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (curTurnTimeLeft >= 10)
+        if (curTurnTimeLeft <= 0)
         {
+            List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
+            var networkPlayer = allPlayers.Find(x => x.index == turnIndex);
+            if (networkPlayer == null)
+                return;
+            print("Pick");
+            print(allPlayers.Count);
+
             if (isServer)
             {
                 turnNetworkBeginTime = (float)NetworkTime.time;
@@ -51,18 +63,15 @@ public class DCMTurnManager : NetworkBehaviour
                     turnIndex = 0;
                 }
             }
-
-            if (!isLocalPlayer)
+            //
+            if (turnMarker.gameObject != null)
             {
-                
+                networkPlayer.CmdPickUpMarker(turnMarker.gameObject);
             }
-
         }
 
 
-        curTurnTimeLeft = Mathf.Abs((float)NetworkTime.time - turnNetworkBeginTime);
+        curTurnTimeLeft = turnDuration - Mathf.Abs((float)NetworkTime.time - turnNetworkBeginTime);
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}";
     }
-    
-    
 }

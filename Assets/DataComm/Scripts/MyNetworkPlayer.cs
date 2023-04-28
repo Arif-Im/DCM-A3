@@ -12,6 +12,7 @@ public class MyNetworkPlayer : NetworkBehaviour
     
     [SyncVar(hook = nameof(OnSetIndex))]
     public int index = 0;
+    
 
     [SyncVar(hook = nameof(OnUpdateScore))]
     [SerializeField]
@@ -104,7 +105,6 @@ public class MyNetworkPlayer : NetworkBehaviour
     {
         displayNameText.text = newName;
     }
-
     public void OnSetIndex(int oldIndex, int newIndex)
     {
         index = newIndex;
@@ -163,18 +163,38 @@ public class MyNetworkPlayer : NetworkBehaviour
 
     #region Pass Authority
 
-    public TurnMarker CurrentMarker;
-    // Ref: https://youtu.be/nkU-dgExUlI?t=548
-    [Command]
-    public void CmdPickUpMarker(TurnMarker marker)
+    public GameObject CurrentMarker;
+    public void PickupMarker(GameObject marker)
     {
         CurrentMarker = marker;
-        CurrentMarker.netIdentity.AssignClientAuthority(connectionToClient);
+        var turnMarker = marker.GetComponent<TurnMarker>();
+        turnMarker.netIdentity.RemoveClientAuthority();
+        turnMarker.netIdentity.AssignClientAuthority(connectionToClient);
+        turnMarker.Parent = this.gameObject;
     }
+    
+    
+    // Ref: https://youtu.be/nkU-dgExUlI?t=548
     [Command]
-    public void CmdDropMarker(TurnMarker marker)
+    public void CmdPickUpMarker(GameObject marker)
     {
-        marker.Parent = null;
+        PickupMarker(marker);
+    }
+
+    
+    [ClientRpc]
+    public void ClientRPCPickUpMarker(GameObject marker)
+    {
+        PickupMarker(marker);
+    }
+    
+    [Command]
+    public void CmdDropMarker(GameObject marker)
+    {
+        CurrentMarker = marker;
+        var turnMarker = marker.GetComponent<TurnMarker>();
+        turnMarker.netIdentity.RemoveClientAuthority();
+        turnMarker.Parent = null;
     }
 
 

@@ -163,7 +163,7 @@ public class DCMThirdPersonController : NetworkBehaviour
     {
         base.OnStartAuthority();
         PlayerInput playerInput = GetComponent<PlayerInput>();
-        playerInput.enabled = true;
+        // playerInput.enabled = true;
     }
 
     private void Start()
@@ -193,6 +193,10 @@ public class DCMThirdPersonController : NetworkBehaviour
 
     private void Update()
     {
+        if( DCMTurnManager.Instance!=null)
+            if( DCMTurnManager.Instance.turnMarker!=null)
+        _playerInput.enabled = DCMTurnManager.Instance.turnMarker.Parent == this.gameObject;
+
         // https://youtu.be/K5vWj721aM0?t=362
         if (!isOwned)
             return;
