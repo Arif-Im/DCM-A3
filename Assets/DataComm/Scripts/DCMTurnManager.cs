@@ -23,11 +23,17 @@ public class DCMTurnManager : NetworkBehaviour
     [SyncVar] public float turnNetworkBeginTime;
 
     public float curTurnTimeLeft;
+    
+    [SyncVar]
+    float matchTime;
 
     float TimeUntilMatchEnds = 120; // 2 minutes until match ends
-
+    private float offsetTime;
+    
     private void Awake()
     {
+        offsetTime = (float)NetworkTime.time;
+
         // If there is an instance, and it's not me, delete myself.
 
         if (Instance != null && Instance != this)
@@ -43,7 +49,6 @@ public class DCMTurnManager : NetworkBehaviour
     }
 
 
-    float matchTime;
     private void LateUpdate()
     {
         List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
@@ -80,7 +85,8 @@ public class DCMTurnManager : NetworkBehaviour
         }
         else
         {
-            matchTime = (float)NetworkTime.time;
+            if(isServer)
+                matchTime = (float)NetworkTime.time - offsetTime;
         }
 
         string timeMinutes = DisplayTimeMinutes(matchTime);
