@@ -9,6 +9,17 @@ using Random = UnityEngine.Random;
 
 public class MyNetworkManager : NetworkManager
 {
+    public override void Awake()
+    {
+        base.Awake();
+        if (MyNetworkManager.singleton != null && MyNetworkManager.singleton !=this )
+        {   
+            var foundNetworkManager = (MyNetworkManager)(MyNetworkManager.singleton );
+            foundNetworkManager.InGameCinemachine = this.InGameCinemachine;
+            foundNetworkManager.NoPlayerCinemachine = this.NoPlayerCinemachine;
+            Destroy(this.gameObject);
+        }
+    }
 
     public override void OnClientConnect()
     {
