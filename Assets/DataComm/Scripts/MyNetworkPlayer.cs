@@ -3,6 +3,7 @@ using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class MyNetworkPlayer : NetworkBehaviour
 {
@@ -25,6 +26,14 @@ public class MyNetworkPlayer : NetworkBehaviour
     [SyncVar(hook = nameof(HandleDisplayColourUpdate))] 
     [SerializeField]
     private Color displayColor = Color.black;
+
+    private DCMThirdPersonController _controller;
+
+    private void Awake()
+    {
+        TryGetComponent(out _controller);
+    }
+
     private void OnEnable()
     {
         GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(true); 
@@ -38,9 +47,7 @@ public class MyNetworkPlayer : NetworkBehaviour
         }    
         // GameObject.Find("Canvas").transform.Find("Panel").Find("Title").GetChild(0).gameObject.SetActive(false);
         
-        if(isOwned)
-            if(CurrentMarker!=null)
-                this.CmdDropMarker(CurrentMarker);
+
     }
 
     private void Update()
@@ -140,6 +147,10 @@ public class MyNetworkPlayer : NetworkBehaviour
 
         displayScoreUI = GameObject.Find("Canvas").transform.Find("Panel").Find($"PlayerScore {index}").gameObject;
         displayScoreUI.transform.GetChild(0).gameObject.SetActive(true);
+        
+        if(isLocalPlayer)
+            displayScoreUI.GetComponentInChildren<Image>().color = Color.yellow;
+
         displayScoreUI.GetComponentInChildren<TextMeshProUGUI>().text = $"{displayNameText.text}: {score}";
         
         // displayScoreText = GameObject.Find("Canvas").transform.Find("Image").GetChild(index).GetComponent<TMP_Text>();
@@ -171,11 +182,16 @@ public class MyNetworkPlayer : NetworkBehaviour
     public GameObject CurrentMarker;
     public void PickupMarker(GameObject marker)
     {
+
+        if (this.index != DCMTurnManager.Instance.turnIndex)
+            return;
         CurrentMarker = marker;
         var turnMarker = marker.GetComponent<TurnMarker>();
         turnMarker.netIdentity.RemoveClientAuthority();
         turnMarker.netIdentity.AssignClientAuthority(connectionToClient);
         turnMarker.Parent = this.gameObject;
+
+
     }
     
     
@@ -190,12 +206,7 @@ public class MyNetworkPlayer : NetworkBehaviour
     [ClientRpc]
     public void ClientRPCPickUpMarker(GameObject marker)
     {
-        if(this.index==DCMTurnManager.Instance.turnIndex)
             PickupMarker(marker);
-        else
-        {
-            CmdDropMarker(marker);
-        }
     }
     
     [Command]

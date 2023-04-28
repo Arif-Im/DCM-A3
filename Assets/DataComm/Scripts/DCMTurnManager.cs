@@ -84,8 +84,11 @@ public class DCMTurnManager : NetworkBehaviour
             
             var newNetworkPlayer = allPlayers.Find(x => x.index == newIndex);
             if(newNetworkPlayer)
-                if(isServer)
+                if (isServer)
+                {
+                    newNetworkPlayer.PickupMarker(turnMarker.gameObject);
                     newNetworkPlayer.ClientRPCPickUpMarker(turnMarker.gameObject);
+                }
         }
     }
 }

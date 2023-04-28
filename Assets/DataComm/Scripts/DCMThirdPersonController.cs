@@ -168,8 +168,10 @@ public class DCMThirdPersonController : NetworkBehaviour
         // playerInput.enabled = true;
     }
 
+    private MyNetworkPlayer _myNetworkPlayer;
     private void Start()
     {
+        _myNetworkPlayer = GetComponent<MyNetworkPlayer>();
         _mainCamera = Camera.main.transform.gameObject;
 
         AddSelfToCineGroupTarget();
@@ -198,7 +200,8 @@ public class DCMThirdPersonController : NetworkBehaviour
         if( DCMTurnManager.Instance!=null)
             if (DCMTurnManager.Instance.turnMarker != null)
             {
-                _playerInput.enabled = DCMTurnManager.Instance.turnMarker.Parent == this.gameObject;
+                if(_playerInput!=null)
+                    _playerInput.enabled = DCMTurnManager.Instance.turnIndex == _myNetworkPlayer.index;
             }
 
         // https://youtu.be/K5vWj721aM0?t=362
@@ -213,8 +216,7 @@ public class DCMThirdPersonController : NetworkBehaviour
             _controller.Move(new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
     }
-    
-    
+
 
     private void FixedUpdate()
     {
