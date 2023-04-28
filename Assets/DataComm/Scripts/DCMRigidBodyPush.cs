@@ -54,6 +54,10 @@ public class DCMRigidBodyPush : MonoBehaviour
         if (other.CompareTag("Collidable"))
         {
             other.tag = "Uncollidable";
+            if(other.name.Contains("Building"))
+                player.setScore(500);
+            if (other.name.Contains("Car_"))
+                player.setScore(300);
             player.setScore(100);
             // player.RpcDisplayScore();
             Debug.Log("Collided");
