@@ -22,7 +22,7 @@ public class DCMTurnManager : NetworkBehaviour
 
     [SyncVar] public float turnNetworkBeginTime;
 
-    public float curTurnTimeLeft;
+    float curTurnTimeLeft;
     
     [SyncVar]
     float matchTime;
@@ -58,10 +58,11 @@ public class DCMTurnManager : NetworkBehaviour
         matchEndText.gameObject.SetActive(false);
     }
 
-
+    public List<MyNetworkPlayer> allPlayers;
     private void LateUpdate()
     {
-        List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
+        // List<MyNetworkPlayer> allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
+        allPlayers = FindObjectsOfType<MyNetworkPlayer>().ToList();
         if (curTurnTimeLeft <= 0)
         {
             if (allPlayers.Count <= 0)
@@ -72,11 +73,28 @@ public class DCMTurnManager : NetworkBehaviour
             if (isServer)
             {
                 turnNetworkBeginTime = (float)NetworkTime.time;
-                turnIndex++;
-                if (turnIndex >= NetworkManager.singleton.numPlayers)
-                {
+
+                allPlayers.OrderBy(x => x.index);
+                allPlayers.Reverse();
+                // var highestTurnIndexPlayer = allPlayers.First();
+  
+                var NextPlayerFound = allPlayers.Find(x => x.index >= turnIndex+1);
+
+
+                if (NextPlayerFound == null)
+                {   
                     turnIndex = 0;
                 }
+                else
+                {
+                    turnIndex = NextPlayerFound.index;
+                }
+                
+                // if (turnIndex >= NetworkManager.singleton.numPlayers)
+                // if (turnIndex >= highestTurnIndexPlayer.index)
+                // {
+                //     turnIndex = 0;
+                // }
             }
         }
 
