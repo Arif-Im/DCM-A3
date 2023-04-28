@@ -40,26 +40,29 @@ public class DCMTurnManager : NetworkBehaviour
 
     private void Update()
     {
-        if (curTurnTimeLeft >= 10 && isServer)
+        if (curTurnTimeLeft >= 10)
         {
-            turnNetworkBeginTime = (float)NetworkTime.time;
-            turnIndex++;
-            if (turnIndex >= NetworkManager.singleton.numPlayers)
+            if (isServer)
             {
-                turnIndex = 0;
+                turnNetworkBeginTime = (float)NetworkTime.time;
+                turnIndex++;
+                if (turnIndex >= NetworkManager.singleton.numPlayers)
+                {
+                    turnIndex = 0;
+                }
             }
+
+            if (!isLocalPlayer)
+            {
+                
+            }
+
         }
 
-        if (isLocalPlayer)
-        {
-            MyNetworkPlayer localP = NetworkClient.localPlayer.gameObject.GetComponent<MyNetworkPlayer>();
-            if (turnIndex==localP.index)
-                localP.CmdPickUpMarker(turnMarker);
-            else
-                localP.CmdDropMarker(turnMarker);
-        }
 
         curTurnTimeLeft = Mathf.Abs((float)NetworkTime.time - turnNetworkBeginTime);
         turnText.text = $"<size=130%>Player {1 + turnIndex}'s </size>\nTurn\n{(curTurnTimeLeft).ToString("F2")}";
     }
+    
+    
 }

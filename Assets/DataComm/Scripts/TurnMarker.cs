@@ -16,8 +16,8 @@ public class TurnMarker : NetworkBehaviour
             transform.position = Parent.transform.position;
             transform.rotation = Parent.transform.rotation;
         }
-
-        turnIndexText.text = $"P{DCMTurnManager.Instance.turnIndex}";;
+        
+        turnIndexText.text = $"P{1+DCMTurnManager.Instance.turnIndex}";;
     }
 
 }
